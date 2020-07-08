@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useContext } from 'react';
+import React, { useRef, useCallback } from 'react';
 import * as Yup from 'yup';
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 import { Form } from '@unform/web';
@@ -35,11 +35,12 @@ const SignIn: React.FC = () => {
 
         signIn({ email: data.email, password: data.password });
       } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const erros = getValidationErrors(err);
+          formRef.current?.setErrors(erros);
+        }
+        // disparar um toast
         console.log(err);
-
-        const erros = getValidationErrors(err);
-
-        formRef.current?.setErrors(erros);
       }
     },
     [signIn],
